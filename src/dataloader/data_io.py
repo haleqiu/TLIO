@@ -36,8 +36,8 @@ class DataIO:
         """
         with h5py.File(osp.join(args.root_dir, dataset, "data.hdf5"), "r") as f:
             ts_all = np.copy(f["ts"]) * 1e6
-            acc_all = np.copy(f["accel_raw"])
-            gyr_all = np.copy(f["gyro_raw"])
+            acc_all = np.copy(f["accel_dcalibrated"])## for shibo, the imu is not calibrated
+            gyr_all = np.copy(f["gyro_dcalibrated"])
         if args.start_from_ts is not None:
             idx_start = np.where(ts_all >= args.start_from_ts)[0][0]
         else:
