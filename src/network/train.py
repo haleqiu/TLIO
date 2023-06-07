@@ -12,13 +12,19 @@ from os import path as osp
 
 import numpy as np
 import torch
-from dataloader.dataset_fb import FbSequenceDataset
+
 from network.losses import get_loss
 from network.model_factory import get_model
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from utils.logging import logging
 
+from dataloader.dataset_fb import FbSequenceDataset
+from dataloader.dataset_euroc import EurocDataset
+dataset_list = {
+    "fb":FbSequenceDataset,
+    "euroc":EurocDataset
+}
 
 def get_datalist(list_path):
     with open(list_path) as f:
@@ -180,6 +186,8 @@ def net_train(args):
     Main function for network training
     """
 
+    Datasets = dataset_list[args.dataset]
+
     try:
         if args.root_dir is None:
             raise ValueError("root_dir must be specified.")
@@ -240,8 +248,9 @@ def net_train(args):
     train_loader, val_loader = None, None
     start_t = time.time()
     train_list = get_datalist(args.train_list)
+    print(train_list)
     try:
-        train_dataset = FbSequenceDataset(
+        train_dataset = Datasets(
             args.root_dir, train_list, args, data_window_config, mode="train"
         )
         train_loader = DataLoader(
@@ -257,7 +266,7 @@ def net_train(args):
     if args.val_list is not None:
         val_list = get_datalist(args.val_list)
         try:
-            val_dataset = FbSequenceDataset(
+            val_dataset = Datasets(
                 args.root_dir, val_list, args, data_window_config, mode="val"
             )
             val_loader = DataLoader(val_dataset, batch_size=512, shuffle=True)

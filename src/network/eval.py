@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 import torch
 from dataloader.dataset_fb import FbSequenceDataset
+from dataloader.dataset_euroc import EurocDataset
+dataset_list = {
+    "fb":FbSequenceDataset,
+    "euroc":EurocDataset
+}
 from network.losses import get_loss
 from network.model_factory import get_model
 from torch.utils.data import DataLoader
@@ -118,6 +123,7 @@ def net_eval(args):
     Main function for network evaluation
     Generate pickle file containing all network sample results
     """
+    Datasets = dataset_list[args.dataset]
 
     try:
         if args.root_dir is None:
@@ -171,7 +177,7 @@ def net_eval(args):
         logging.info(f"Processing {data}...")
 
         try:
-            seq_dataset = FbSequenceDataset(
+            seq_dataset = Datasets(
                 args.root_dir, [data], args, data_window_config, mode="eval"
             )
             seq_loader = DataLoader(seq_dataset, batch_size=1024, shuffle=False)

@@ -9,6 +9,11 @@ from os import path as osp
 import matplotlib.pyplot as plt
 import torch
 from dataloader.dataset_fb import FbSequenceDataset
+from dataloader.dataset_euroc import EurocDataset
+dataset_list = {
+    "fb":FbSequenceDataset,
+    "euroc":EurocDataset
+}
 from network.losses import get_loss
 from network.model_factory import get_model
 from scipy.interpolate import interp1d
@@ -79,8 +84,10 @@ def pose_integrate(args, dataset, preds):
     ts_in_range = ts[ind_intg[0] : ind_intg[-1]]  # s
     pos_pred = interp1d(ts_intg, pos_intg, axis=0)(ts_in_range)
     pos_gt = dataset.gt_pos[0][ind_intg[0] : ind_intg[-1], :]
-    ori_pred = dataset.orientations[0][ind_intg[0] : ind_intg[-1], :]
-    ori_gt = dataset.gt_ori[0][ind_intg[0] : ind_intg[-1], :]
+    ori_pred = dataset.orientations[0][ind_intg[0] : ind_intg[-1]]
+    # ori_gt = dataset.gt_ori[0][ind_intg[0] : ind_intg[-1], :]
+    ori_gt = dataset.gt_ori[0][ind_intg[0] : ind_intg[-1]]
+
     eul_pred = Rotation.from_quat(ori_pred).as_euler("xyz", degrees=True)
     eul_gt = Rotation.from_quat(ori_gt).as_euler("xyz", degrees=True)
 
@@ -154,6 +161,7 @@ def compute_metrics_and_plotting(args, net_attr_dict, traj_attr_dict):
     metrics["ronin"]["mse_loss_x"] = float(mse_loss[0])
     metrics["ronin"]["mse_loss_y"] = float(mse_loss[1])
     metrics["ronin"]["mse_loss_z"] = float(mse_loss[2])
+    metrics["ronin"]["rmse_loss_avg"] = np.sqrt(float(avg_mse_loss))
     metrics["ronin"]["mse_loss_avg"] = float(avg_mse_loss)
     metrics["ronin"]["likelihood_loss_x"] = float(likelihood_loss[0])
     metrics["ronin"]["likelihood_loss_y"] = float(likelihood_loss[1])
@@ -476,7 +484,7 @@ def net_test(args):
     Main function for network testing
     Generate trajectories, plots, and metrics.json file
     """
-
+    Datasets = dataset_list[args.dataset]
     try:
         if args.root_dir is None:
             raise ValueError("root_dir must be specified.")
@@ -512,7 +520,7 @@ def net_test(args):
     for data in test_list:
         logging.info(f"Processing {data}...")
         try:
-            seq_dataset = FbSequenceDataset(
+            seq_dataset = Datasets(
                 args.root_dir, [data], args, data_window_config, mode="test"
             )
             seq_loader = DataLoader(seq_dataset, batch_size=1024, shuffle=False)
