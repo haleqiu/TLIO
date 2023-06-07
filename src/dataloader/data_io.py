@@ -80,7 +80,7 @@ class DataIO:
         vio_calibs = np.loadtxt(
             osp.join(args.root_dir, dataset, "calib_state.txt"), delimiter=","
         )
-        self.vio_ts = vio_states[:, 0] * 1e-6
+        self.vio_ts = vio_states[:, 0]
         self.vio_p = vio_states[:, 5:8]
         self.vio_v = vio_states[:, 8:11]
         self.vio_rq = vio_states[:, 1:5]
