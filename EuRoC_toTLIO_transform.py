@@ -24,8 +24,18 @@ def interp_quat(time, opt_time, xyzw):
 
 
 if __name__ == '__main__':
-    EuRoc_path = "local_data/EuRoc_dataset"
-    transformed_path = "local_data/EuRoc_transformed"
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--EuRoC_path', type=str, default='local_data/EuRoc_dataset',
+                        help='path to the EuRoC dataset')
+    parser.add_argument('--transformed_path', type=str, default='local_data/EuRoc_transformed',
+                        help='path to the transformed EuRoC dataset')
+    args = parser.parse_args()
+
+    EuRoc_path = args.EuRoC_path
+    transformed_path = args.transformed_path
+
     if not os.path.exists(transformed_path):
         os.makedirs(transformed_path)
 
