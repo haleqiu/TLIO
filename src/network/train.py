@@ -215,6 +215,8 @@ def net_train(args):
     Main function for network training
     """
 
+    Datasets = dataset_list[args.dataset]
+
     try:
         if args.root_dir is None:
             raise ValueError("root_dir must be specified.")
@@ -288,7 +290,7 @@ def net_train(args):
 
     """
     try:
-        train_dataset = FbSequenceDataset(
+        train_dataset = Datasets(
             args.root_dir, train_list, args, data_window_config, mode="train"
         )
         train_loader = DataLoader(
@@ -310,7 +312,7 @@ def net_train(args):
         val_list = data.get_datalist("val")
         """
         try:
-            val_dataset = FbSequenceDataset(
+            val_dataset = Datasets(
                 args.root_dir, val_list, args, data_window_config, mode="val"
             )
             val_loader = DataLoader(val_dataset, batch_size=512, shuffle=True)

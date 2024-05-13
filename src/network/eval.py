@@ -20,6 +20,7 @@ def net_eval(args):
     Main function for network evaluation
     Generate pickle file containing all network sample results
     """
+    Datasets = dataset_list[args.dataset]
 
     try:
         if args.root_dir is None:
