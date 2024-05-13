@@ -6,9 +6,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    filter_outputs_folder = "filter_outputs/EuRoc_dataset"
-    visualization_outputs_folder = "visualization_of_EKF"
-    transformed_dataset_path = "local_data/EuRoc_transformed"
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filter_outputs_folder', type=str, default='filter_outputs/EuRoc_dataset',
+                        help='path to folder containing filtered outputs')
+    parser.add_argument('--visualization_outputs_folder', type=str, default='visualization_of_EKF',
+                        help='path to visualization outputs')
+    parser.add_argument('--dataset_dir', type=str, default='local_data/EuRoc_transformed',
+                        help='path to the dataset')
+    args = parser.parse_args()
+
+    filter_outputs_folder = args.filter_outputs_folder
+    visualization_outputs_folder = args.visuization_outputs_folder
+    transformed_dataset_path = args.dataset_dir
 
     for root, dirs, files in os.walk(filter_outputs_folder):
 
