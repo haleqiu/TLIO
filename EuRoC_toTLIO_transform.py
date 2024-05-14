@@ -39,20 +39,20 @@ if __name__ == '__main__':
     if not os.path.exists(transformed_path):
         os.makedirs(transformed_path)
 
-    train_list = open("train_list.txt", 'w')
-    train_list.write("MH_01" + '\n'
-                     + "MH_03" + '\n'
-                     + "MH_05" + '\n'
+    train_list = open(os.path.join(transformed_path, "train_list.txt"), 'w')
+    train_list.write("MH_01_easy" + '\n'
+                     + "MH_03_medium" + '\n'
+                     + "MH_05_difficult" + '\n'
                      + "V1_01_easy" + '\n'
                      + "V1_03_difficult" + '\n'
                      + "V2_01_easy" + '\n'
                      + "V2_03_difficult" + '\n')
     train_list.close()
-    test_list = open("test_list.txt", 'w')
-    test_list.write("MH_04"+'\n'+'V1_02_medium'+'\n')
+    test_list = open(os.path.join(transformed_path, "test_list.txt"), 'w')
+    test_list.write("MH_04_difficult"+'\n'+'V1_02_medium'+'\n')
     test_list.close()
-    val_list = open("val_list.txt", 'w')
-    val_list.write("MH_02"+'\n'+'V2_02_medium'+'\n')
+    val_list = open(os.path.join(transformed_path, "val_list.txt"), 'w')
+    val_list.write("MH_02_easy"+'\n'+'V2_02_medium'+'\n')
 
     for root, subsets, files in os.walk(EuRoc_path):
 
