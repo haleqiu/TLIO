@@ -18,7 +18,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     filter_outputs_folder = args.filter_outputs_folder
-    visualization_outputs_folder = args.visuization_outputs_folder
+    visualization_outputs_folder = args.visualization_outputs_folder
     transformed_dataset_path = args.dataset_dir
 
     for root, dirs, files in os.walk(filter_outputs_folder):
