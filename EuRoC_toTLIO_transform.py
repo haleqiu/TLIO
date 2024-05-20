@@ -40,19 +40,27 @@ if __name__ == '__main__':
         os.makedirs(transformed_path)
 
     train_list = open(os.path.join(transformed_path, "train_list.txt"), 'w')
-    train_list.write("MH_01_easy" + '\n'
+    train_list.write("V1_02_medium" + '\n'
+                     + "V2_01_easy" + '\n'
+                     + "V2_03_difficult" + '\n'
                      + "MH_03_medium" + '\n'
                      + "MH_05_difficult" + '\n'
-                     + "V1_01_easy" + '\n'
-                     + "V1_03_difficult" + '\n'
-                     + "V2_01_easy" + '\n'
-                     + "V2_03_difficult" + '\n')
+                     + "MH_01_easy" + '\n')
     train_list.close()
     test_list = open(os.path.join(transformed_path, "test_list.txt"), 'w')
-    test_list.write("MH_04_difficult"+'\n'+'V1_02_medium'+'\n')
+    test_list.write("V1_02_medium" + '\n'
+                    + 'V2_01_easy' + '\n'
+                    + 'V2_03_difficult' + '\n'
+                    + 'MH_03_medium' + '\n'
+                    + 'MH_05_difficult' + '\n'
+                    + 'MH_01_easy' + '\n')
     test_list.close()
     val_list = open(os.path.join(transformed_path, "val_list.txt"), 'w')
-    val_list.write("MH_02_easy"+'\n'+'V2_02_medium'+'\n')
+    val_list.write("MH_02_easy" + '\n'
+                   + 'MH_04_difficult' + '\n'
+                   + 'V1_03_difficult' + '\n'
+                   + 'V2_02_medium' + '\n'
+                   + 'V1_01_easy' + '\n')
 
     for root, subsets, files in os.walk(EuRoc_path):
 
@@ -79,9 +87,11 @@ if __name__ == '__main__':
             imu0_samples[:, 0] = raw_IMUdata[:, 0]
             imu0_samples[:, 1] = 0
             imu0_samples[:, 2:imu0_samples_cols] = raw_IMUdata[:, 1:raw_cols]
+            '''
             np.savetxt(os.path.join(transformed_path, subset, "imu_samples_0.csv"), imu0_samples, delimiter=",",
                        header="timestamp [ns], temperature [degC], w_RS_S_x [rad s^-1], w_RS_S_y [rad s^-1],"
                               " w_RS_S_z [rad s^-1], a_RS_S_x [m s^-2], a_RS_S_y [m s^-2], a_RS_S_z [m s^-2]")
+            '''
 
             gt_file_path = os.path.join(subset_path, "mav0", 'state_groundtruth_estimate0', 'data.csv')
             gt_data = np.loadtxt(gt_file_path, delimiter=',')
@@ -118,6 +128,11 @@ if __name__ == '__main__':
             imu0_resampled[:, 14:17] = gt_data[:, 8:11]
 
             np.save(os.path.join(transformed_path, subset, "imu0_resampled.npy"), imu0_resampled)
+
+            imu0_samples = imu0_samples[index_t_start_raw:index_t_end_raw]
+            np.savetxt(os.path.join(transformed_path, subset, "imu_samples_0.csv"), imu0_samples, delimiter=",",
+                       header="timestamp [ns], temperature [degC], w_RS_S_x [rad s^-1], w_RS_S_y [rad s^-1],"
+                              " w_RS_S_z [rad s^-1], a_RS_S_x [m s^-2], a_RS_S_y [m s^-2], a_RS_S_z [m s^-2]")
 
             imu0_resampled_description = {
                 "columns_name(width)": [
